@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Workers</title>
+</head>
+
+<body>
+    <h1>Demonstrating the Use of WebWorker in a Browser Environment</h1>
+    <p>Lets say you have an intensive cpu demanding function you need to execute in the browser. The use of web worker to run a separate thread and prevent the UI from freezing or being blocked.</p>
+
+    <h3>Add two numbers together inside a web worker</h3>
+    <input id = "n1" placeholder = "Number 1" type = "number" /><hr>
+    <input id = "n2" placeholder = "Number 2" type = "number" /><hr>
+    <br>
+    <h3 id = "ans"></h3>
+    <br>
+    <button id="b">Add Number</button>
+
+    <script>
+        //: creating worker on the main thread of the browser
+        const worker = new Worker("work.js")
+        //: listen to events on the main thread
+        worker.addEventListener("message", (event) => {
+           // console.log(event.data)
+            //alert("ans  is "+event.data)
+            console.log("from worker, received by main", event.data)
+            document.getElementById("ans").innerHTML = "ans  is "+event.data
+        })
+
+        document.addEventListener("DOMContentLoaded", () => {
+        
+            document.getElementById("b").onclick = () => {
+               
+               const num_1 = document.getElementById("n1").value
+               const num_2 = document.getElementById("n2").value
+                //: send cpu intensive task to worker
+                worker.postMessage({ number_1: +num_1, number_2: +num_2 })
+
+            }
+        })
+    </script>
+
+</body>
+
+</html>
